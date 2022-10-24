@@ -1,3 +1,4 @@
+import json
 
 from aws_lambda_powertools import Logger
 from aws_lambda_powertools.utilities.typing import LambdaContext
@@ -10,8 +11,15 @@ from aws_lambda_powertools.utilities.typing import LambdaContext
 _LOGGER = Logger()
 
 
-@logger.inject_lambda_context(log_event=True)
+@_LOGGER.inject_lambda_context(log_event=True)
 def handler(event: dict, context: LambdaContext) -> str:
     _LOGGER.debug(event)
     _LOGGER.debug(context)
-    return "hello world"
+
+    return {
+        'statusCode': 200,
+        'body': json.dumps({
+            "response_type": "in_channel",
+            "text": "I am alive!"
+        })
+    }

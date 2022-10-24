@@ -10,6 +10,6 @@ kwargs = {
 }
 
 app = cdk.App()
-SlackWhisperStack(app, "cdk", **kwargs)
+SlackWhisperStack(app, "slack-whisper-infra", **kwargs)
 
 app.synth()
