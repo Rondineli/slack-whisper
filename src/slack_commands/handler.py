@@ -15,7 +15,6 @@ from aws_lambda_powertools.utilities.typing import LambdaContext
 
 
 _SECRET_INTERNAL_ALB_URL = os.environ.get('SECRET_INTERNAL_ALB_URL', 'https://www.google.com')
-# _SLACK_BOT_TOKEN = os.environ.get("BOT_TOKEN", "xoxb-253525622532-4256573569846-eWgA56WdP2jil41aga9DclSS")
 
 
 
@@ -77,10 +76,15 @@ def send_secret_link(**payload) -> dict:
         ]
     })
 
+
+
+
     resp = requests.post(
         payload['response_url'],
         json=dialog_form
     )
+
+    print(dialog_form)
 
     if 'ok' in resp.text: # this is ugly, but sometimes slack api returns a {"ok" true}
         ts = datetime.strptime(
