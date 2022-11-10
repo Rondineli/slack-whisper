@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+    body {
+      padding: 20px;
+      margin: 0;
+      box-sizing: border-box;
+      color: #707070;
+    }
+    span.field-icon {
+      float: right;
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      cursor: pointer;
+      z-index: 1;
+      font-family:sans-serif;
+    }
+    p.test-text {
+      text-security: circle; /* IE/Safari */
+      -moz-text-security: circle; /* FireFox */
+      -webkit-text-security: circle; /* Chrome/Safari  */
+    }
+    </style>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  </head>
+  <body>
+    <div class="container center-align">
+      <h2>Hello Slack-Whisper(SW) user!</h2>
+      <p>{{ user }} shared a secret with you, you have <span><span class='blink' id='minutes'></span> and <span class='blink' id='seconds'></span></span> to copy it, or it will be destroyed!</p>
+
+      <div class="col s12 l12">
+        <div class='row'>
+          <div class='input-field col s12 l12' id='body_password'>
+            <p class="flow-text test-text" id="password" type="password">{{ secret }}</p>
+            <span toggle="#password" id="show_hidden_text" style="right: 390px;" class="field-icon toggle-password"><span class="material-icons blue-text">visibility</span></span>
+            <span toggle="#password" id="copy_to_clipboard" style="right: 430px;" class="field-icon toggle-password"><span class="material-icons green-text">content_copy</span></span>
+         </div>
+        </div>
+        <span> Ps: Do not refresh this page, or this secret will be destroyed!</span>
+      </div>
+    </div>
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="text/javascript">
+      var clicked = 0;
+
+      function deleteElements(element) {
+        if (element) {
+          element.remove();
+        }
+        $("#copy_to_clipboard").remove();
+        $("#show_hidden_text").remove();
+        $('#label_password').remove();
+        $('#body_password').append('<p>Text copied to your clipboard and deleted!</p>')
+      }
+
+      $(".toggle-password").click(function (e) {
+        e.preventDefault();
+
+        $(this).toggleClass("toggle-password");
+
+        var toggleId = $(this).attr('id')
+
+        var input = $($(this).attr("toggle"));
+
+        if ((toggleId) == 'show_hidden_text') {
+          if (clicked == 0) {
+            $(this).html('<span class="material-icons blue-text">visibility_off</span >');
+            clicked = 1;
+          } else {
+            $(this).html('<span class="material-icons blue-text">visibility</span >');
+            clicked = 0;
+          }
+
+          var input = $($(this).attr("toggle"));
+          if (input.attr("class") == "flow-text test-text") {
+            input.attr("class", "flow-text  green-text");
+          } else {
+            input.attr("class", "flow-text test-text");
+          }
+        } else {
+          input.select();
+          // input.setSelectionRange(0, 99999); // For mobile devices
+          navigator.clipboard.writeText(input.html());
+          //input.remove();
+          stop();
+        }
+      });
+
+      function addMinutes(numOfMinutes, date = new Date()) {
+        date.setMinutes(date.getMinutes() + numOfMinutes);
+        return date;
+      }
+
+      var intervalID;
+      var blickIntervalId;
+
+      function makeTimer(endTime) {
+        endTime = (Date.parse(endTime) / 1000);
+
+        var now = new Date();
+        now = (Date.parse(now) / 1000);
+
+        var timeLeft = endTime - now;
+
+        var days = Math.floor(timeLeft / 86400);
+        var hours = Math.floor((timeLeft - (days * 86400)) / 3600);
+        var minutes = Math.floor((timeLeft - (days * 86400) - (hours * 3600 )) / 60);
+        var seconds = Math.floor((timeLeft - (days * 86400) - (hours * 3600) - (minutes * 60)));
+        if ((days == 0) && (hours == 0) && (minutes == 0) && (seconds == 0)){  
+          stop()
+          return
+        }
+
+        var timerClass = 'green-text';
+
+        if (days >= 0) {
+          if (hours < "10") { hours = "0" + hours; }
+          if (minutes < "10") { minutes = "0" + minutes; }
+          if (seconds < "10") { seconds = "0" + seconds; }
+
+          if ((minutes <=2) && (minutes >= 1)) { timerClass = 'orange-text'; }
+          if (minutes <= 0) { timerClass = 'red-text'; blickIntervalId = setInterval(blink_text, 1000); }
+        } else {
+          stop()
+          return
+        }
+        $("#hours").html("<span class='" + timerClass + "'>"+ hours + " Hours</span>");
+        $("#minutes").html("<span class='" + timerClass + "'> "+ minutes + " Minutes</span>");
+        $("#seconds").html("<span class='" + timerClass + "'> "+ seconds + " Seconds</span>");
+      }
+      function start() {
+        var endTime = addMinutes({{ minutes_to_add }})
+        // var endTime = addMinutes(4)
+        intervalID = setInterval(function() { makeTimer(endTime); }, 1000);
+      }
+           
+      function stop() {
+        clearInterval(intervalID)
+        clearInterval(blickIntervalId);
+        $("#hours").html("<span class='red-text'> 0 Hours</span>");
+        $("#minutes").html("<span class='red-text'> 0 Minutes</span>");
+        $("#seconds").html("<span class='red-text'> 0 Seconds</span>");
+        deleteElements($('#password'));
+        console.log('Done')
+       }
+
+      function blink_text() {
+        $('.blink').fadeOut(500);
+        $('.blink').fadeIn(500);
+      }
+      start();
+    </script>
+  </body>
+</html>

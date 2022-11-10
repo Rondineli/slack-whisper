@@ -1,0 +1,10 @@
+{
+	"description": "Slack whisper stack",
+	"id": "slack-whisper-infra-stack",
+	"application_name": "slack-whisper-command",
+	"slack_signing_secret": "",
+	"slack_bot_token": "",
+	"slack_bot_user_token": "",
+	"apigw_stage": "v1",
+	"total_minutes_to_expire_secrets": 40
+}

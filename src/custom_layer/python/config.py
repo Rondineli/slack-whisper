@@ -1,0 +1,3 @@
+import os
+
+TOTAL_MINUTES_TO_EXPIRE = os.environ.get('TOTAL_MINUTES_TO_EXPIRE', 40)

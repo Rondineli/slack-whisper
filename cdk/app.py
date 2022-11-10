@@ -4,12 +4,12 @@ import aws_cdk as cdk
 
 from cdk.cdk_stack import SlackWhisperStack
 
-# TODO: It will be future an argument
-kwargs = {
-	'description': 'Slack whisper stack'
-}
+from utils.load_config import Config
+
+
+STACK_ID = Config.pop('id', 'slack-whisper-infra')
 
 app = cdk.App()
-SlackWhisperStack(app, "slack-whisper-infra", **kwargs)
+SlackWhisperStack(app, STACK_ID, **Config)
 
 app.synth()

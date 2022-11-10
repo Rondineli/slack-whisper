@@ -1,0 +1,63 @@
+{
+    "display_information": {
+        "name": "Demo App"
+    },
+    "features": {
+        "app_home": {
+            "home_tab_enabled": false,
+            "messages_tab_enabled": true,
+            "messages_tab_read_only_enabled": false
+        },
+        "bot_user": {
+            "display_name": "Demo App",
+            "always_online": true
+        },
+        "slash_commands": [
+            {
+                "command": "/secret",
+                "url": "https://7hr96cm969.execute-api.us-east-1.amazonaws.com/v1/secret",
+                "description": "super secret",
+                "usage_hint": "test ",
+                "should_escape": false
+            }
+        ]
+    },
+    "oauth_config": {
+        "scopes": {
+            "user": [
+                "channels:history",
+                "channels:write",
+                "chat:write",
+                "groups:history",
+                "groups:read",
+                "im:history",
+                "mpim:history",
+                "users:write"
+            ],
+            "bot": [
+                "app_mentions:read",
+                "channels:read",
+                "chat:write",
+                "chat:write.customize",
+                "chat:write.public",
+                "commands",
+                "emoji:read",
+                "incoming-webhook",
+                "users:write",
+                "channels:history",
+                "groups:history",
+                "mpim:history",
+                "im:history"
+            ]
+        }
+    },
+    "settings": {
+        "interactivity": {
+            "is_enabled": true,
+            "request_url": "https://7hr96cm969.execute-api.us-east-1.amazonaws.com/v1/secret"
+        },
+        "org_deploy_enabled": false,
+        "socket_mode_enabled": false,
+        "token_rotation_enabled": false
+    }
+}
